@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lokakos - Kelola Kos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.2/feather.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .sidebar {
+            transition: all 0.3s;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="sidebar bg-blue-800 text-white w-64 space-y-6 py-7 px-2 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out" id="sidebar">
+            <div class="flex items-center space-x-2 px-4">
+                <i data-feather="home" class="w-8 h-8"></i>
+                <span class="text-2xl font-extrabold">LOKAKOS</span>
+            </div>
+            <nav>
+                <a href="dashboard_pemilik.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
+                    <i data-feather="grid" class="w-5 h-5 mr-2"></i> Dashboard
+                </a>
+                <a href="kelola-kos.html" class="block py-2.5 px-4 rounded transition duration-200 bg-blue-700 text-white">
+                    <i data-feather="home" class="w-5 h-5 mr-2"></i> Kelola Kos
+                </a>
+                <a href="booking.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
+                    <i data-feather="calendar" class="w-5 h-5 mr-2"></i> Booking
+                </a>
+                <a href="pembayaran.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
+                    <i data-feather="dollar-sign" class="w-5 h-5 mr-2"></i> Laporan Pembayaran
+                </a>
+                <a href="profil.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
+                    <i data-feather="user" class="w-5 h-5 mr-2"></i> Profil
+                </a>
+                <a href="../logout.php" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
+                    <i data-feather="log-out" class="w-5 h-5 mr-2"></i> Keluar
+                </a>
+            </nav>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header -->
+            <header class="bg-white shadow-sm z-10">
+                <div class="flex items-center justify-between px-6 py-4">
+                    <div class="flex items-center">
+                        <button id="menuBtn" class="text-gray-500 focus:outline-none md:hidden">
+                            <i data-feather="menu" class="w-6 h-6"></i>
+                        </button>
+                        <h1 class="text-xl font-semibold text-gray-800 ml-2">Kelola Kos</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <i data-feather="bell" class="w-6 h-6 text-gray-500"></i>
+                            <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500"></span>
+                        </div>
+                        <div class="relative">
+                            <img src="../img/profil.png" alt="User" class="w-8 h-8 rounded-full">
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Content -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4">
+                <div class="bg-white rounded-lg shadow p-6 mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-semibold text-gray-800">Daftar Kos Saya</h2>
+                        <button onclick="showAddKosModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+                            <i data-feather="plus" class="w-4 h-4 mr-2"></i> Tambah Kos
+                        </button>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Kos</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lokasi</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipe</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="kosList">
+                                <!-- Data kos akan dimuat di sini -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Modal Tambah Kos -->
+    <div id="addKosModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Tambah Kos Baru</h3>
+                <button onclick="hideAddKosModal()" class="text-gray-500 hover:text-gray-700">
+                    <i data-feather="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            
+            <form id="addKosForm" class="space-y-4">
+                <div>
+                    <label for="namaKos" class="block text-sm font-medium text-gray-700">Nama Kos*</label>
+                    <input type="text" id="namaKos" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                
+                <div>
+                    <label for="alamatKos" class="block text-sm font-medium text-gray-700">Alamat Lengkap*</label>
+                    <textarea id="alamatKos" rows="3" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="tipeKos" class="block text-sm font-medium text-gray-700">Tipe Kos*</label>
+                        <select id="tipeKos" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Pilih Tipe</option>
+                            <option value="putra">Putra</option>
+                            <option value="putri">Putri</option>
+                            <option value="campur">Campur</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="hargaKos" class="block text-sm font-medium text-gray-700">Harga per Bulan*</label>
+                        <div class="mt-1 relative rounded-md shadow-sm">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <span class="text-gray-500">Rp</span>
+                            </div>
+                            <input type="number" id="hargaKos" required class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="0">
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="fasilitasKos" class="block text-sm font-medium text-gray-700">Fasilitas*</label>
+                    <textarea id="fasilitasKos" rows="3" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="Contoh: Kamar mandi dalam, AC, WiFi, Dapur bersama"></textarea>
+                </div>
+                
+                <div>
+                    <label for="fotoKos" class="block text-sm font-medium text-gray-700">Foto Kos</label>
+                    <input type="file" id="fotoKos" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    <p class="mt-1 text-sm text-gray-500">Unggah foto utama kos (maks. 2MB)</p>
+                </div>
+                
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="hideAddKosModal()" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Edit Kos -->
+    <div id="editKosModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Edit Kos</h3>
+                <button onclick="hideEditKosModal()" class="text-gray-500 hover:text-gray-700">
+                    <i data-feather="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            
+            <form id="editKosForm" class="space-y-4">
+                <input type="hidden" id="editKosId">
+                <div>
+                    <label for="editNamaKos" class="block text-sm font-medium text-gray-700">Nama Kos*</label>
+                    <input type="text" id="editNamaKos" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                
+                <div>
+                    <label for="editAlamatKos" class="block text-sm font-medium text-gray-700">Alamat Lengkap*</label>
+                    <textarea id="editAlamatKos" rows="3" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="editTipeKos" class="block text-sm font-medium text-gray-700">Tipe Kos*</label>
+                        <select id="editTipeKos" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <option value="putra">Putra</option>
+                            <option value="putri">Putri</option>
+                            <option value="campur">Campur</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="editHargaKos" class="block text-sm font-medium text-gray-700">Harga per Bulan*</label>
+                        <div class="mt-1 relative rounded-md shadow-sm">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <span class="text-gray-500">Rp</span>
+                            </div>
+                            <input type="number" id="editHargaKos" required class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="editFasilitasKos" class="block text-sm font-medium text-gray-700">Fasilitas*</label>
+                    <textarea id="editFasilitasKos" rows="3" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+                
+                <div>
+                    <label for="editFotoKos" class="block text-sm font-medium text-gray-700">Foto Kos</label>
+                    <div class="mt-1 flex items-center">
+                        <img id="currentFotoKos" src="" alt="Foto Kos" class="h-20 w-20 rounded-md object-cover mr-4">
+                        <input type="file" id="editFotoKos" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    </div>
+                    <p class="mt-1 text-sm text-gray-500">Unggah foto baru untuk mengganti (maks. 2MB)</p>
+                </div>
+                
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="hideEditKosModal()" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        feather.replace();
+        
+        // Toggle sidebar on mobile
+        const sidebar = document.getElementById('sidebar');
+        const menuBtn = document.getElementById('menuBtn');
+        
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+        
+        // Sample data for kos
+        let kosData = [
+            {
+                id: 1,
+                nama: "Kos Mawar Indah",
+                alamat: "Jl. Melati No. 12, Bandung",
+                tipe: "putri",
+                harga: 1500000,
+                fasilitas: "Kamar mandi dalam, AC, WiFi, Dapur bersama, Laundry",
+                foto: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                status: "tersedia"
+            },
+            {
+                id: 2,
+                nama: "Kos Kenanga Asri",
+                alamat: "Jl. Anggrek No. 8, Bandung",
+                tipe: "putra",
+                harga: 1200000,
+                fasilitas: "Kamar mandi dalam, WiFi, Dapur bersama, Parkir motor",
+                foto: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                status: "tersedia"
+            },
+            {
+                id: 3,
+                nama: "Kos Sejahtera",
+                alamat: "Jl. Flamboyan No. 5, Bandung",
+                tipe: "campur",
+                harga: 1800000,
+                fasilitas: "Kamar mandi dalam, AC, WiFi, Dapur bersama, Laundry, Parkir mobil",
+                foto: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                status: "terisi"
+            }
+        ];
+        
+        // Load kos data to table
+        function loadKosData() {
+            const kosList = document.getElementById('kosList');
+            kosList.innerHTML = '';
+            
+            kosData.forEach(kos => {
+                const statusClass = kos.status === 'tersedia' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800';
+                const statusText = kos.status === 'tersedia' ? 'Tersedia' : 'Terisi';
+                const tipeClass = kos.tipe === 'putra' ? 'bg-blue-100 text-blue-800' : 
+                                  kos.tipe === 'putri' ? 'bg-pink-100 text-pink-800' : 'bg-purple-100 text-purple-800';
+                const tipeText = kos.tipe === 'putra' ? 'Putra' : 
+                                kos.tipe === 'putri' ? 'Putri' : 'Campur';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10">
+                                <img class="h-10 w-10 rounded-full" src="${kos.foto}" alt="${kos.nama}">
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">${kos.nama}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${kos.alamat.split(',')[0]}</div>
+                        <div class="text-sm text-gray-500">${kos.alamat.split(',')[1]}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${tipeClass}">${tipeText}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        Rp ${kos.harga.toLocaleString('id-ID')}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">${statusText}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="editKos(${kos.id})" class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
+                        <button onclick="confirmDeleteKos(${kos.id})" class="text-red-600 hover:text-red-900">Hapus</button>
+                    </td>
+                `;
+                kosList.appendChild(row);
+            });
+        }
+        
+        // Modal functions
+        function showAddKosModal() {
+            document.getElementById('addKosModal').classList.remove('hidden');
+            document.getElementById('addKosForm').reset();
+            feather.replace();
+        }
+        
+        function hideAddKosModal() {
+            document.getElementById('addKosModal').classList.add('hidden');
+        }
+        
+        function showEditKosModal() {
+            document.getElementById('editKosModal').classList.remove('hidden');
+            feather.replace();
+        }
+        
+        function hideEditKosModal() {
+            document.getElementById('editKosModal').classList.add('hidden');
+        }
+        
+        // Form submission
+        document.getElementById('addKosForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Generate new ID
+            const newId = kosData.length > 0 ? Math.max(...kosData.map(kos => kos.id)) + 1 : 1;
+            
+            // Create new kos object
+            const newKos = {
+                id: newId,
+                nama: document.getElementById('namaKos').value,
+                alamat: document.getElementById('alamatKos').value,
+                tipe: document.getElementById('tipeKos').value,
+                harga: parseInt(document.getElementById('hargaKos').value),
+                fasilitas: document.getElementById('fasilitasKos').value,
+                foto: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60", // Default image
+                status: "tersedia"
+            };
+            
+            // Add to data array
+            kosData.push(newKos);
+            
+            // Reload table
+            loadKosData();
+            
+            // Hide modal
+            hideAddKosModal();
+            
+            // Show success message
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: 'Kos baru telah ditambahkan.',
+                confirmButtonColor: '#3b82f6',
+            });
+        });
+        
+        // Edit kos
+        function editKos(id) {
+            const kos = kosData.find(k => k.id === id);
+            if (!kos) return;
+            
+            document.getElementById('editKosId').value = kos.id;
+            document.getElementById('editNamaKos').value = kos.nama;
+            document.getElementById('editAlamatKos').value = kos.alamat;
+            document.getElementById('editTipeKos').value = kos.tipe;
+            document.getElementById('editHargaKos').value = kos.harga;
+            document.getElementById('editFasilitasKos').value = kos.fasilitas;
+            document.getElementById('currentFotoKos').src = kos.foto;
+            
+            showEditKosModal();
+        }
+        
+        // Update kos
+        document.getElementById('editKosForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = parseInt(document.getElementById('editKosId').value);
+            const index = kosData.findIndex(k => k.id === id);
+            
+            if (index !== -1) {
+                kosData[index] = {
+                    ...kosData[index],
+                    nama: document.getElementById('editNamaKos').value,
+                    alamat: document.getElementById('editAlamatKos').value,
+                    tipe: document.getElementById('editTipeKos').value,
+                    harga: parseInt(document.getElementById('editHargaKos').value),
+                    fasilitas: document.getElementById('editFasilitasKos').value,
+                    // Note: In a real app, you would handle file upload here
+                };
+                
+                // Reload table
+                loadKosData();
+                
+                // Hide modal
+                hideEditKosModal();
+                
+                // Show success message
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Data kos telah diperbarui.',
+                    confirmButtonColor: '#3b82f6',
+                });
+            }
+        });
+        
+        // Delete kos confirmation
+        function confirmDeleteKos(id) {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Anda tidak dapat mengembalikan data yang telah dihapus!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3b82f6',
+                cancelButtonColor: '#ef4444',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    deleteKos(id);
+                }
+            });
+        }
+        
+        // Delete kos
+        function deleteKos(id) {
+            kosData = kosData.filter(kos => kos.id !== id);
+            loadKosData();
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'Terhapus!',
+                text: 'Data kos telah dihapus.',
+                confirmButtonColor: '#3b82f6',
+            });
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadKosData();
+        });
+    </script>
+</body>
+</html>

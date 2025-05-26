@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lokakos - Dashboard Pencari Kos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.2/feather.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .sidebar {
+            transition: all 0.3s;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="sidebar bg-blue-800 text-white w-64 space-y-6 py-7 px-2 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out" id="sidebar">
+            <div class="flex items-center space-x-2 px-4">
+                <i data-feather="home" class="w-8 h-8"></i>
+                <span class="text-2xl font-extrabold">LOKAKOS</span>
+            </div>
+            <nav>
+                <a href="dashboard_pencari.html" class="block py-2.5 px-4 rounded transition duration-200 bg-blue-700 text-white">
+                    <i data-feather="search" class="w-5 h-5 mr-2"></i> Cari Kos
+                </a>
+                <a href="booking_pencari.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
+                    <i data-feather="calendar" class="w-5 h-5 mr-2"></i> Booking Saya
+                </a>
+                <a href="pembayaran_pencari.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
+                    <i data-feather="dollar-sign" class="w-5 h-5 mr-2"></i> Pembayaran
+                </a>
+                <a href="profil_pencari.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
+                    <i data-feather="user" class="w-5 h-5 mr-2"></i> Profil
+                </a>
+                <a href="../index.php" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
+                    <i data-feather="log-out" class="w-5 h-5 mr-2"></i> Keluar
+                </a>
+            </nav>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header -->
+            <header class="bg-white shadow-sm z-10">
+                <div class="flex items-center justify-between px-6 py-4">
+                    <div class="flex items-center">
+                        <button id="menuBtn" class="text-gray-500 focus:outline-none md:hidden">
+                            <i data-feather="menu" class="w-6 h-6"></i>
+                        </button>
+                        <h1 class="text-xl font-semibold text-gray-800 ml-2">Cari Kos</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <i data-feather="bell" class="w-6 h-6 text-gray-500"></i>
+                            <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500"></span>
+                        </div>
+                        <div class="relative">
+                            <img src="../img/profil.png" alt="User" class="w-8 h-8 rounded-full">
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Content -->
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4">
+                <!-- Search and Filter -->
+                <div class="bg-white rounded-lg shadow p-4 mb-6">
+                    <div class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
+                        <div class="flex-1">
+                            <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Lokasi</label>
+                            <div class="relative">
+                                <input type="text" id="location" placeholder="Cari berdasarkan lokasi" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                <i data-feather="map-pin" class="absolute right-3 top-3 text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-48">
+                            <label for="price" class="block text-sm font-medium text-gray-700 mb-1">Harga</label>
+                            <select id="price" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Semua Harga</option>
+                                <option value="1">&lt; Rp 1.000.000</option>
+                                <option value="2">Rp 1-2 juta</option>
+                                <option value="3">Rp 2-3 juta</option>
+                                <option value="4">&gt; Rp 3 juta</option>
+                            </select>
+                        </div>
+                        <div class="w-full md:w-48">
+                            <label for="type" class="block text-sm font-medium text-gray-700 mb-1">Tipe</label>
+                            <select id="type" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Semua Tipe</option>
+                                <option value="putra">Putra</option>
+                                <option value="putri">Putri</option>
+                                <option value="campur">Campur</option>
+                            </select>
+                        </div>
+                        <div class="flex items-end">
+                            <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+                                <i data-feather="search" class="w-4 h-4 mr-2"></i> Cari
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Kos List -->
+                <div class="mb-6">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Rekomendasi Kos</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Kos Item 1 -->
+                        <div class="bg-white rounded-lg shadow overflow-hidden">
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Kos" class="w-full h-48 object-cover">
+                                <div class="absolute top-2 right-2 bg-pink-600 text-white text-xs px-2 py-1 rounded">Putri</div>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-lg mb-1">Kos Mawar Indah</h3>
+                                <div class="flex items-center text-gray-600 mb-2">
+                                    <i data-feather="map-pin" class="w-4 h-4 mr-1"></i>
+                                    <span class="text-sm">Jl. Melati No. 12, Palu</span>
+                                </div>
+                                <div class="flex items-center text-gray-600 mb-3">
+                                    <i data-feather="star" class="w-4 h-4 mr-1 text-yellow-400"></i>
+                                    <span class="text-sm">4.8 (120 review)</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <span class="text-lg font-bold text-blue-600">Rp 1.500.000</span>
+                                        <span class="text-gray-500 text-sm">/ bulan</span>
+                                    </div>
+                                    <button onclick="showDetailKos(1)" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-sm">
+                                        Lihat Detail
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Kos Item 2 -->
+                        <div class="bg-white rounded-lg shadow overflow-hidden">
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Kos" class="w-full h-48 object-cover">
+                                <div class="absolute top-2 right-2 bg-blue-600 text-white text-xs px-2 py-1 rounded">Putra</div>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-lg mb-1">Kos Kenanga Asri</h3>
+                                <div class="flex items-center text-gray-600 mb-2">
+                                    <i data-feather="map-pin" class="w-4 h-4 mr-1"></i>
+                                    <span class="text-sm">Jl. Anggrek No. 8, Palu</span>
+                                </div>
+                                <div class="flex items-center text-gray-600 mb-3">
+                                    <i data-feather="star" class="w-4 h-4 mr-1 text-yellow-400"></i>
+                                    <span class="text-sm">4.5 (85 review)</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <span class="text-lg font-bold text-blue-600">Rp 1.200.000</span>
+                                        <span class="text-gray-500 text-sm">/ bulan</span>
+                                    </div>
+                                    <button onclick="showDetailKos(2)" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-sm">
+                                        Lihat Detail
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Kos Item 3 -->
+                        <div class="bg-white rounded-lg shadow overflow-hidden">
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Kos" class="w-full h-48 object-cover">
+                                <div class="absolute top-2 right-2 bg-purple-600 text-white text-xs px-2 py-1 rounded">Campur</div>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold text-lg mb-1">Kos Sejahtera</h3>
+                                <div class="flex items-center text-gray-600 mb-2">
+                                    <i data-feather="map-pin" class="w-4 h-4 mr-1"></i>
+                                    <span class="text-sm">Jl. Flamboyan No. 5, Palu</span>
+                                </div>
+                                <div class="flex items-center text-gray-600 mb-3">
+                                    <i data-feather="star" class="w-4 h-4 mr-1 text-yellow-400"></i>
+                                    <span class="text-sm">4.7 (95 review)</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <span class="text-lg font-bold text-blue-600">Rp 1.800.000</span>
+                                        <span class="text-gray-500 text-sm">/ bulan</span>
+                                    </div>
+                                    <button onclick="showDetailKos(3)" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-sm">
+                                        Lihat Detail
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal Detail Kos -->
+    <div id="detailKosModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-2/3 lg:w-1/2 shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Detail Kos</h3>
+                <button onclick="hideDetailKosModal()" class="text-gray-500 hover:text-gray-700">
+                    <i data-feather="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="md:col-span-2">
+                        <div class="relative">
+                            <img id="detailKosImage" src="" alt="Kos" class="w-full h-64 object-cover rounded-lg">
+                            <div id="detailKosType" class="absolute top-2 right-2 text-white text-xs px-2 py-1 rounded"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="md:col-span-2">
+                        <h2 id="detailKosName" class="text-xl font-bold"></h2>
+                        <div class="flex items-center text-gray-600 mt-1">
+                            <i data-feather="map-pin" class="w-4 h-4 mr-1"></i>
+                            <span id="detailKosLocation"></span>
+                        </div>
+                        <div class="flex items-center text-gray-600 mt-1">
+                            <i data-feather="star" class="w-4 h-4 mr-1 text-yellow-400"></i>
+                            <span id="detailKosRating"></span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-700">Tipe Kos</h4>
+                        <p id="detailKosTipe" class="mt-1"></p>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-700">Harga per Bulan</h4>
+                        <p id="detailKosHarga" class="mt-1 font-bold text-blue-600"></p>
+                    </div>
+                    
+                    <div class="md:col-span-2">
+                        <h4 class="text-sm font-medium text-gray-700">Fasilitas</h4>
+                        <div id="detailKosFasilitas" class="mt-1 grid grid-cols-2 gap-2"></div>
+                    </div>
+                    
+                    <div class="md:col-span-2">
+                        <h4 class="text-sm font-medium text-gray-700">Deskripsi</h4>
+                        <p id="detailKosDeskripsi" class="mt-1 text-gray-600"></p>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button onclick="hideDetailKosModal()" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Tutup
+                    </button>
+                    <button onclick="showBookingModal()" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Booking Sekarang
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Booking -->
+    <div id="bookingModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Formulir Booking</h3>
+                <button onclick="hideBookingModal()" class="text-gray-500 hover:text-gray-700">
+                    <i data-feather="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            
+            <form id="bookingForm" class="space-y-4">
+                <input type="hidden" id="kosIdBooking">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="namaLengkap" class="block text-sm font-medium text-gray-700">Nama Lengkap*</label>
+                        <input type="text" id="namaLengkap" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label for="noHp" class="block text-sm font-medium text-gray-700">Nomor HP*</label>
+                        <input type="tel" id="noHp" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="tanggalMasuk" class="block text-sm font-medium text-gray-700">Tanggal Masuk*</label>
+                        <input type="date" id="tanggalMasuk" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label for="durasi" class="block text-sm font-medium text-gray-700">Durasi Sewa*</label>
+                        <select id="durasi" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Pilih Durasi</option>
+                            <option value="3">3 Bulan</option>
+                            <option value="6">6 Bulan</option>
+                            <option value="12">12 Bulan</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="catatan" class="block text-sm font-medium text-gray-700">Catatan Tambahan</label>
+                    <textarea id="catatan" rows="3" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+                
+                <div class="bg-gray-50 p-4 rounded-md">
+                    <h4 class="text-sm font-medium text-gray-700 mb-2">Ringkasan Booking</h4>
+                    <div class="flex justify-between mb-1">
+                        <span class="text-gray-600">Nama Kos:</span>
+                        <span id="bookingKosName" class="font-medium"></span>
+                    </div>
+                    <div class="flex justify-between mb-1">
+                        <span class="text-gray-600">Harga per Bulan:</span>
+                        <span id="bookingKosHarga" class="font-medium"></span>
+                    </div>
+                    <div class="flex justify-between mb-1">
+                        <span class="text-gray-600">Durasi:</span>
+                        <span id="bookingKosDurasi" class="font-medium"></span>
+                    </div>
+                    <div class="border-t border-gray-200 my-2"></div>
+                    <div class="flex justify-between font-bold">
+                        <span>Total Pembayaran:</span>
+                        <span id="bookingKosTotal" class="text-blue-600"></span>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="hideBookingModal()" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Lanjutkan Pembayaran
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        feather.replace();
+        
+        // Toggle sidebar on mobile
+        const sidebar = document.getElementById('sidebar');
+        const menuBtn = document.getElementById('menuBtn');
+        
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+        
+        // Sample data for kos
+        const kosData = [
+            {
+                id: 1,
+                nama: "Kos Mawar Indah",
+                alamat: "Jl. Melati No. 12, Palu",
+                tipe: "putri",
+                harga: 1500000,
+                rating: "4.8 (120 review)",
+                fasilitas: ["Kamar mandi dalam", "AC", "WiFi", "Dapur bersama", "Laundry", "Parkir motor"],
+                deskripsi: "Kos yang nyaman dan aman khusus untuk wanita. Lokasi strategis dekat dengan kampus dan pusat perbelanjaan.",
+                foto: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                tipeLabel: "Putri",
+                tipeColor: "bg-pink-600"
+            },
+            {
+                id: 2,
+                nama: "Kos Kenanga Asri",
+                alamat: "Jl. Anggrek No. 8, Palu",
+                tipe: "putra",
+                harga: 1200000,
+                rating: "4.5 (85 review)",
+                fasilitas: ["Kamar mandi dalam", "WiFi", "Dapur bersama", "Parkir motor", "Ruang tamu"],
+                deskripsi: "Kos eksklusif untuk pria dengan lingkungan yang asri dan tenang. Dekat dengan area perkantoran dan transportasi umum.",
+                foto: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                tipeLabel: "Putra",
+                tipeColor: "bg-blue-600"
+            },
+            {
+                id: 3,
+                nama: "Kos Sejahtera",
+                alamat: "Jl. Flamboyan No. 5, Palu",
+                tipe: "campur",
+                harga: 1800000,
+                rating: "4.7 (95 review)",
+                fasilitas: ["Kamar mandi dalam", "AC", "WiFi", "Dapur bersama", "Laundry", "Parkir mobil", "Security 24 jam"],
+                deskripsi: "Kos campur dengan fasilitas lengkap dan keamanan terjamin. Cocok untuk mahasiswa dan pekerja profesional.",
+                foto: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+                tipeLabel: "Campur",
+                tipeColor: "bg-purple-600"
+            }
+        ];
+        
+        // Show kos detail
+        function showDetailKos(id) {
+            const kos = kosData.find(k => k.id === id);
+            if (!kos) return;
+            
+            // Update modal content
+            document.getElementById('detailKosImage').src = kos.foto;
+            document.getElementById('detailKosName').textContent = kos.nama;
+            document.getElementById('detailKosLocation').textContent = kos.alamat;
+            document.getElementById('detailKosRating').textContent = kos.rating;
+            document.getElementById('detailKosTipe').textContent = kos.tipeLabel;
+            document.getElementById('detailKosHarga').textContent = `Rp ${kos.harga.toLocaleString('id-ID')} / bulan`;
+            document.getElementById('detailKosDeskripsi').textContent = kos.deskripsi;
+            
+            // Set type badge
+            const typeBadge = document.getElementById('detailKosType');
+            typeBadge.className = `absolute top-2 right-2 text-white text-xs px-2 py-1 rounded ${kos.tipeColor}`;
+            typeBadge.textContent = kos.tipeLabel;
+            
+            // Update facilities
+            const facilitiesContainer = document.getElementById('detailKosFasilitas');
+            facilitiesContainer.innerHTML = '';
+            kos.fasilitas.forEach(fasilitas => {
+                const facilityItem = document.createElement('div');
+                facilityItem.className = 'flex items-center';
+                facilityItem.innerHTML = `
+                    <i data-feather="check" class="w-4 h-4 mr-2 text-green-500"></i>
+                    <span class="text-sm">${fasilitas}</span>
+                `;
+                facilitiesContainer.appendChild(facilityItem);
+            });
+            
+            // Set kos id for booking
+            document.getElementById('kosIdBooking').value = kos.id;
+            
+            // Show modal
+            document.getElementById('detailKosModal').classList.remove('hidden');
+            feather.replace();
+        }
+        
+        function hideDetailKosModal() {
+            document.getElementById('detailKosModal').classList.add('hidden');
+        }
+        
+        // Show booking modal
+        function showBookingModal() {
+            const kosId = document.getElementById('kosIdBooking').value;
+            const kos = kosData.find(k => k.id === parseInt(kosId));
+            
+            if (kos) {
+                document.getElementById('bookingKosName').textContent = kos.nama;
+                document.getElementById('bookingKosHarga').textContent = `Rp ${kos.harga.toLocaleString('id-ID')}`;
+                
+                // Set default duration to 6 months
+                document.getElementById('durasi').value = '6';
+                updateBookingSummary();
+            }
+            
+            // Hide detail modal and show booking modal
+            hideDetailKosModal();
+            document.getElementById('bookingModal').classList.remove('hidden');
+            feather.replace();
+        }
+        
+        function hideBookingModal() {
+            document.getElementById('bookingModal').classList.add('hidden');
+        }
+        
+        // Update booking summary
+        function updateBookingSummary() {
+            const durasi = document.getElementById('durasi').value;
+            const kosId = document.getElementById('kosIdBooking').value;
+            const kos = kosData.find(k => k.id === parseInt(kosId));
+            
+            if (durasi && kos) {
+                const total = kos.harga * parseInt(durasi);
+                document.getElementById('bookingKosDurasi').textContent = `${durasi} Bulan`;
+                document.getElementById('bookingKosTotal').textContent = `Rp ${total.toLocaleString('id-ID')}`;
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('durasi').addEventListener('change', updateBookingSummary);
+        
+        // Form submission
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // In a real app, you would process the booking here
+            // For demo, we'll show a success message and redirect to payment
+            Swal.fire({
+                icon: 'success',
+                title: 'Booking Berhasil!',
+                text: 'Anda akan diarahkan ke halaman pembayaran.',
+                confirmButtonColor: '#3b82f6',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirect to payment page
+                    window.location.href = 'pembayaran_pencari.html';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lokakos - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.2/feather.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #1E3A8A;
+        }
+        .navi-blue {
+            background-color: #1E3A8A;
+        }
+        .navi-light {
+            background-color: #3B82F6;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-lg">
+        <div class="text-center">
+            <h1 class="text-3xl font-bold text-navi-blue">LOKAKOS</h1>
+            <p class="mt-2 text-gray-600">Temukan kos impianmu dengan mudah</p>
+        </div>
+        
+        <div class="flex space-x-4 mb-6">
+            <button id="btnPencari" class="flex-1 py-2 px-4 rounded-lg bg-blue-500 text-white font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition">
+                Pencari Kos
+            </button>
+            <button id="btnPemilik" class="flex-1 py-2 px-4 rounded-lg bg-gray-200 text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition">
+                Pemilik Kos
+            </button>
+        </div>
+        
+        <form id="loginForm" class="mt-8 space-y-6">
+            <div class="rounded-md shadow-sm space-y-4">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <input id="email" name="email" type="email" required class="py-2 px-3 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <input id="password" name="password" type="password" required class="py-2 px-3 block w-full border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                            <i data-feather="eye" class="text-gray-400 cursor-pointer" onclick="togglePassword()"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                    <label for="remember-me" class="ml-2 block text-sm text-gray-700">Ingat saya</label>
+                </div>
+
+                <div class="text-sm">
+                    <a href="#" class="font-medium text-blue-600 hover:text-blue-500">Lupa password?</a>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Masuk
+                </button>
+            </div>
+        </form>
+        
+        <div class="text-center text-sm">
+            <span class="text-gray-600">Belum punya akun?</span>
+            <a href="register.html" class="font-medium text-blue-600 hover:text-blue-500">Daftar sekarang</a>
+        </div>
+    </div>
+
+    <script>
+        feather.replace();
+        
+        let userType = 'pencari';
+        document.getElementById('btnPencari').addEventListener('click', function() {
+            userType = 'pencari';
+            this.classList.remove('bg-gray-200', 'text-gray-700');
+            this.classList.add('bg-blue-500', 'text-white');
+            document.getElementById('btnPemilik').classList.remove('bg-blue-500', 'text-white');
+            document.getElementById('btnPemilik').classList.add('bg-gray-200', 'text-gray-700');
+        });
+        
+        document.getElementById('btnPemilik').addEventListener('click', function() {
+            userType = 'pemilik';
+            this.classList.remove('bg-gray-200', 'text-gray-700');
+            this.classList.add('bg-blue-500', 'text-white');
+            document.getElementById('btnPencari').classList.remove('bg-blue-500', 'text-white');
+            document.getElementById('btnPencari').classList.add('bg-gray-200', 'text-gray-700');
+        });
+        
+        function togglePassword() {
+            const password = document.getElementById('password');
+            const icon = document.querySelector('[data-feather="eye"]');
+            if (password.type === 'password') {
+                password.type = 'text';
+                feather.replace();
+            } else {
+                password.type = 'password';
+                feather.replace();
+            }
+        }
+        
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Validasi sederhana
+            if (!email || !password) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Email dan password harus diisi!',
+                });
+                return;
+            }
+            
+            // Simulasi login berhasil
+            Swal.fire({
+                icon: 'success',
+                title: 'Login Berhasil',
+                text: 'Anda akan diarahkan ke dashboard',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                if (userType === 'pencari') {
+                    window.location.href = 'pencari/dashboard_pencari.html';
+                } else {
+                    window.location.href = 'pemilik/dashboard_pemilik.html';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
